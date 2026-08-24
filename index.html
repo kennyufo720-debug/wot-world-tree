@@ -753,13 +753,15 @@ const ADS = [
   '✨ 回音樹 × 印尼樹農：一份收入，一片森林',
 ];
 
+const PLAYER_STYLE = {hair:'#c9a05a', body:'#6a9a6a', pants:'#5a3a22', flower:'#ffcf6e'};
+/* fields reinterpreted for forest-spirit sprites: hair=acorn cap, body=leaf cape/tunic, pants=boots */
 const NPC_STYLES = [
-  {hair:'#8a5a2a', body:'#c04a4a', pants:'#5a3a2a'},   // swordsman red
-  {hair:'#e8d060', body:'#4a7fdf', pants:'#2a3a6a'},   // mage blue
-  {hair:'#4a8a4a', body:'#3fa06a', pants:'#2a5a3a'},   // archer green
-  {hair:'#c08ae0', body:'#e8a8c8', pants:'#8a5a8a'},   // acolyte pink
-  {hair:'#3a3a5a', body:'#e8c25a', pants:'#6a5a2a'},   // merchant gold
-  {hair:'#e07a3a', body:'#8a6ee0', pants:'#4a3a7a'},   // thief purple
+  {hair:'#b98a4a', body:'#7a9a4a', pants:'#6a4a2a', flower:'#e0a03a'},  // acorn tan / moss green
+  {hair:'#a97a3a', body:'#5a8a6a', pants:'#5a3a22', flower:'#e8c25a'},  // walnut / teal-green
+  {hair:'#c49a5a', body:'#8aa04a', pants:'#7a5230', flower:'#e07a5a'},  // sand / olive
+  {hair:'#9a6a38', body:'#6a9a7a', pants:'#5a3a28', flower:'#e8a8c8'},  // umber / sage
+  {hair:'#b08050', body:'#7a8a3a', pants:'#654226', flower:'#f0d078'},  // hazel / fern
+  {hair:'#a67c44', body:'#5a9a8a', pants:'#563a24', flower:'#c98ae0'},  // chestnut / teal
 ];
 const NPC_NAMES = ['小柚','蒼霧','阿樹','琉璃','森森','光光','葉子','露珠'];
 const NPC_CHATS = [
@@ -858,38 +860,65 @@ function treeSVG(seedKey, size=140, spirit=0){
   </svg>`;
 }
 
-/* RO-proportion chibi: head ≈ 45% of height, tiny body, visible legs */
+/* forest-spirit chibi: acorn cap + sprout, big eyes, translucent wings, leaf cape
+   style fields reused as: hair=cap, body=cape/tunic, pants=boots, flower=accent */
 function avatarSVG(style, isMe=false){
-  const pants = style.pants || '#4a3a5a';
-  const crown = isMe && S.resident ? `<path d="M15 4 L18 -1 L21 3 L24 -2 L27 3 L30 -1 L33 4 Z" fill="#ffd98a" stroke="#8a6d1f" stroke-width=".6"/>` : '';
-  return `<svg width="52" height="62" viewBox="0 0 48 60" xmlns="http://www.w3.org/2000/svg">
-    ${crown}
-    <ellipse cx="24" cy="57.5" rx="11" ry="2.4" fill="rgba(0,0,0,.35)"/>
-    <!-- legs -->
-    <rect x="18" y="47" width="4.6" height="9" rx="2" fill="${pants}"/>
-    <rect x="25.4" y="47" width="4.6" height="9" rx="2" fill="${pants}"/>
-    <ellipse cx="20.3" cy="56.5" rx="3.4" ry="2" fill="#3a3040"/>
-    <ellipse cx="27.7" cy="56.5" rx="3.4" ry="2" fill="#3a3040"/>
-    <!-- body -->
-    <path d="M14 36 Q14 30 24 30 Q34 30 34 36 L33 48 Q24 50 15 48 Z" fill="${style.body}" stroke="rgba(0,0,0,.25)" stroke-width=".8"/>
+  const cap = style.hair || '#b98a4a';
+  const capDark = shade(cap, -18);
+  const cape = style.body || '#7a9a4a';
+  const capeDark = shade(cape, -16);
+  const boot = style.pants || '#5a3a22';
+  const flower = style.flower || '#e0a03a';
+  const skin = '#ffe6c9';
+  const sparkle = isMe && S.resident ? `
+    <circle cx="9" cy="10" r="1.1" fill="#fff6cf"><animate attributeName="opacity" values="0.2;1;0.2" dur="1.6s" repeatCount="indefinite"/></circle>
+    <circle cx="39" cy="13" r="1" fill="#fff6cf"><animate attributeName="opacity" values="1;0.2;1" dur="1.6s" repeatCount="indefinite"/></circle>` : '';
+  return `<svg width="52" height="70" viewBox="0 -10 48 70" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="24" cy="59.5" rx="10.5" ry="2.2" fill="rgba(60,40,20,.28)"/>
+    <!-- wings (behind body) -->
+    <ellipse cx="10" cy="34" rx="7.5" ry="11" fill="#eaf6ea" opacity=".55" stroke="#cfe8cf" stroke-width=".6" transform="rotate(-18 10 34)"/>
+    <ellipse cx="38" cy="34" rx="7.5" ry="11" fill="#eaf6ea" opacity=".55" stroke="#cfe8cf" stroke-width=".6" transform="rotate(18 38 34)"/>
+    <!-- legs / boots -->
+    <rect x="18.2" y="47" width="4.6" height="8" rx="2" fill="#ecd9b8"/>
+    <rect x="25.2" y="47" width="4.6" height="8" rx="2" fill="#ecd9b8"/>
+    <path d="M17 52.5 q3.3 -1.6 6.5 0 l-.4 3.2 q-2.9 1.3 -5.7 0 Z" fill="${boot}"/>
+    <path d="M24 52.5 q3.3 -1.6 6.5 0 l-.4 3.2 q-2.9 1.3 -5.7 0 Z" fill="${boot}"/>
+    <!-- leaf cape / tunic -->
+    <path d="M13.5 34 Q13 29 24 29 Q35 29 34.5 34 L33.5 49 Q24 51.5 14.5 49 Z" fill="${cape}" stroke="${capeDark}" stroke-width=".7"/>
+    <path d="M24 29 L21 41 L24 38 L27 41 Z" fill="${capeDark}" opacity=".55"/>
     <!-- arms -->
-    <ellipse cx="12.5" cy="39" rx="3" ry="5" fill="${style.body}" stroke="rgba(0,0,0,.2)" stroke-width=".6"/>
-    <ellipse cx="35.5" cy="39" rx="3" ry="5" fill="${style.body}" stroke="rgba(0,0,0,.2)" stroke-width=".6"/>
-    <circle cx="12.5" cy="43.5" r="2" fill="#ffe4d0"/>
-    <circle cx="35.5" cy="43.5" r="2" fill="#ffe4d0"/>
-    <!-- big RO head -->
-    <circle cx="24" cy="17" r="14.5" fill="#ffe4d0" stroke="rgba(0,0,0,.25)" stroke-width=".8"/>
-    <path d="M9.5 15 a14.5 14.5 0 0 1 29 0 q-1.5 -10 -14.5 -10 q-13 0 -14.5 10 Z" fill="${style.hair}"/>
-    <path d="M9.5 15 q-1 6 1.5 9 q-.5 -5 1 -8 Z" fill="${style.hair}"/>
-    <path d="M38.5 15 q1 6 -1.5 9 q.5 -5 -1 -8 Z" fill="${style.hair}"/>
-    <!-- face -->
-    <circle cx="18.5" cy="19" r="2" fill="#2c3048"/>
-    <circle cx="29.5" cy="19" r="2" fill="#2c3048"/>
-    <circle cx="19.2" cy="18.3" r=".7" fill="#fff"/>
-    <circle cx="30.2" cy="18.3" r=".7" fill="#fff"/>
-    <ellipse cx="15" cy="23" rx="2.4" ry="1.4" fill="#ffb3a0" opacity=".8"/>
-    <ellipse cx="33" cy="23" rx="2.4" ry="1.4" fill="#ffb3a0" opacity=".8"/>
-    <path d="M21.5 24.5 Q24 26.8 26.5 24.5" stroke="#a06a5a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="12" cy="37" rx="3" ry="5" fill="${cape}" stroke="${capeDark}" stroke-width=".6"/>
+    <ellipse cx="36" cy="37" rx="3" ry="5" fill="${cape}" stroke="${capeDark}" stroke-width=".6"/>
+    <circle cx="12" cy="41.5" r="2" fill="${skin}"/>
+    <circle cx="36" cy="41.5" r="2" fill="${skin}"/>
+    <!-- leaf collar -->
+    <path d="M17 32 Q19 35 24 35 Q29 35 31 32 Q29 33.6 24 33.6 Q19 33.6 17 32 Z" fill="${shade(cape,10)}"/>
+    <!-- head -->
+    <circle cx="24" cy="17" r="14.2" fill="${skin}" stroke="rgba(80,50,20,.22)" stroke-width=".7"/>
+    <!-- acorn cap -->
+    <path d="M9.3 16.5 Q9.3 3 24 3 Q38.7 3 38.7 16.5 Q31 12 24 12 Q17 12 9.3 16.5 Z" fill="${cap}" stroke="${capDark}" stroke-width=".7"/>
+    <path d="M9.8 16 Q13 13.4 24 13.4 Q35 13.4 38.2 16" fill="none" stroke="${capDark}" stroke-width=".7" opacity=".6"/>
+    <path d="M9.3 16.5 Q9 8 15.5 5" fill="none" stroke="${capDark}" stroke-width=".7" opacity=".5"/>
+    <path d="M38.7 16.5 Q39 8 32.5 5" fill="none" stroke="${capDark}" stroke-width=".7" opacity=".5"/>
+    <!-- sprout on cap -->
+    <path d="M24 3 L24 -5" stroke="#5a8a3a" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M24 -5 Q19 -8 17 -3 Q21 -3 24 -5 Z" fill="#7ab454" stroke="#4a7a34" stroke-width=".5"/>
+    <path d="M24 -5 Q29 -9 31 -3 Q26 -3 24 -5 Z" fill="#8ec25e" stroke="#4a7a34" stroke-width=".5"/>
+    <!-- flower accent -->
+    <g transform="translate(33,9)">
+      <circle r="1.7" cx="-1.6" cy="-1" fill="${flower}"/><circle r="1.7" cx="1.6" cy="-1" fill="${flower}"/>
+      <circle r="1.7" cx="-1.6" cy="1.4" fill="${flower}"/><circle r="1.7" cx="1.6" cy="1.4" fill="${flower}"/>
+      <circle r="1.5" cx="0" cy="0.2" fill="#fff3d0"/>
+    </g>
+    <!-- big eyes -->
+    <ellipse cx="18.2" cy="19.5" rx="2.5" ry="3" fill="#4a3320"/>
+    <ellipse cx="29.8" cy="19.5" rx="2.5" ry="3" fill="#4a3320"/>
+    <ellipse cx="19.1" cy="18" rx=".9" ry="1.1" fill="#fff"/>
+    <ellipse cx="30.7" cy="18" rx=".9" ry="1.1" fill="#fff"/>
+    <ellipse cx="15" cy="23.5" rx="2.6" ry="1.5" fill="#ffb49a" opacity=".7"/>
+    <ellipse cx="33" cy="23.5" rx="2.6" ry="1.5" fill="#ffb49a" opacity=".7"/>
+    <path d="M21.5 25 Q24 27 26.5 25" stroke="#a06a48" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    ${sparkle}
   </svg>`;
 }
 
@@ -1023,7 +1052,7 @@ function makeScene(container, cfg){
   // --- player ---
   const player = addSprite({
     name: S.playerName ? S.playerName : '你（旅人）',
-    style: {hair:'#6a4a2a', body:'#3fa06a', pants:'#2a4a5a'},
+    style: PLAYER_STYLE,
     me:true,
     x: W()*0.5, y: H()*0.86,
   });
@@ -1586,7 +1615,7 @@ function flyDot(stage, fromPct, toPct, ms=900){
 function buildCoreLoop(){
   const host = $('coreLoopStage'); if (!host) return;
   host.innerHTML = `<div class="stage" id="clStage">
-    <div class="clEl" id="clPlayer" style="left:4%;bottom:12px;width:46px;transition:left 1.3s ease-in-out">${avatarSVG({hair:'#6a4a2a',body:'#3fa06a',pants:'#2a4a5a'})}</div>
+    <div class="clEl" id="clPlayer" style="left:4%;bottom:12px;width:46px;transition:left 1.3s ease-in-out">${avatarSVG(PLAYER_STYLE)}</div>
     <div class="clEl" style="left:22%;bottom:14px">${treeSVG('sakura',76)}</div>
     <div class="clEl clIcon" id="clCoin" style="left:47%;bottom:62px;color:#ffd94a;text-shadow:1px 1px 0 #8a6d1f,0 0 8px rgba(232,201,58,.8)">✦</div>
     <div class="clBadge" style="left:45%;bottom:44px">光點</div>
@@ -1684,7 +1713,7 @@ function renderTowerViz(){
       <div class="rk">R${k.r}</div>
       <div style="flex:1"><div style="font-size:.8rem;font-weight:700">${k.name}</div>
         <div style="font-size:.64rem;color:var(--ink2)">${k.trees} 棵 · ${k.price?'$'+fmt(k.price):'免費'}</div></div>
-      ${k.r===cur?`<div style="width:26px;flex-shrink:0" title="你在這裡">${avatarSVG({hair:'#6a4a2a',body:'#3fa06a',pants:'#2a4a5a'})}</div>`:''}
+      ${k.r===cur?`<div style="width:26px;flex-shrink:0" title="你在這裡">${avatarSVG(PLAYER_STYLE)}</div>`:''}
     </div>`).join('')}</div>
     <div class="tvInfo panel" id="tvInfo"></div>`;
   const show = r=>{
