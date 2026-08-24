@@ -490,7 +490,7 @@ label{font-size:.76rem;color:var(--ink2);display:block;margin:9px 0 3px;font-wei
         <span class="idtag" id="hudId">VISITOR 訪客</span>
       </div>
       <div id="hudCoins">
-        <span class="coin">✦ 光點 <b id="hudLp">0</b></span>
+        <span class="coin">🌰 回音種子 <b id="hudLp">0</b></span>
         <span class="coin">$ 現金 <b id="hudCash">0</b></span>
         <span class="coin">🌱 樹苗股份 <b id="hudShare">0</b>/10</span>
         <span class="coin">🌳 樹資產 <b id="hudTree">0</b></span>
@@ -523,7 +523,7 @@ label{font-size:.76rem;color:var(--ink2);display:block;margin:9px 0 3px;font-wei
       <div id="tower" class="rowin">
         <div class="rwtitle">世界樹電梯 <span class="en">ELEVATOR</span></div>
         <div class="rwbody">
-          <p class="desc">搭電梯造訪任何樓層 · 澆水賺光點</p>
+          <p class="desc">搭電梯造訪任何樓層 · 澆水賺回音種子</p>
           <div id="floorList"></div>
         </div>
       </div>
@@ -571,16 +571,16 @@ label{font-size:.76rem;color:var(--ink2);display:block;margin:9px 0 3px;font-wei
       <div class="rwtitle">樹市集 <span class="en">TREE MARKET</span></div>
       <div class="rwbody">
         <div class="cvt" style="height:58px;margin-bottom:2px">
-          <span class="ci" style="color:#b8860b">✦</span><span class="flow"><i></i><i></i><i></i></span>
+          <span class="ci" style="color:#b8860b">🌰</span><span class="flow"><i></i><i></i><i></i></span>
           <span class="ci">🌱</span><span class="flow"><i></i><i></i><i></i></span>
           <span class="co">🌳</span>
         </div>
-        <p class="muted" style="text-align:center;margin-bottom:10px">光點（遊戲幣）→ 樹苗股份（0.1 棵）→ 樹資產（真實柚木 · 鏈上）</p>
+        <p class="muted" style="text-align:center;margin-bottom:10px">回音種子（遊戲幣）→ 樹苗股份（0.1 棵）→ 樹資產（真實柚木 · 鏈上）</p>
         <div class="achGrid">
           <div class="achCard">
-            <div class="cvt"><span class="ci" style="color:#b8860b">✦</span><span class="flow"><i></i><i></i><i></i></span><span class="co">🌱</span></div>
-            <p style="text-align:center">100 光點 = 1 股</p>
-            <div style="margin-top:9px;text-align:center"><button class="btn sm" id="buyShareLp">兌換 1 股（100 光點）</button></div>
+            <div class="cvt"><span class="ci" style="color:#b8860b">🌰</span><span class="flow"><i></i><i></i><i></i></span><span class="co">🌱</span></div>
+            <p style="text-align:center">100 回音種子 = 1 股</p>
+            <div style="margin-top:9px;text-align:center"><button class="btn sm" id="buyShareLp">兌換 1 股（100 回音種子）</button></div>
           </div>
           <div class="achCard">
             <div class="cvt"><span class="ci">💵</span><span class="flow"><i></i><i></i><i></i></span><span class="co">🌱</span></div>
@@ -615,7 +615,7 @@ label{font-size:.76rem;color:var(--ink2);display:block;margin:9px 0 3px;font-wei
     <div class="rowin">
       <div class="rwtitle">造型商城 <span class="en">SKIN SHOP</span></div>
       <div class="rwbody">
-        <p class="desc">每個人的角色形象都不一樣！用光點或現金購買造型，穿上後立刻套用到大廳、樓層裡的你。世界樹裡的其他訪客也都穿著各自買下的造型。</p>
+        <p class="desc">每個人的角色形象都不一樣！用回音種子或現金購買造型，穿上後立刻套用到大廳、樓層裡的你。世界樹裡的其他訪客也都穿著各自買下的造型。</p>
         <div class="achGrid" id="skinGrid" style="grid-template-columns:repeat(auto-fill,minmax(190px,1fr))"></div>
       </div>
     </div>
@@ -671,7 +671,7 @@ label{font-size:.76rem;color:var(--ink2);display:block;margin:9px 0 3px;font-wei
   <div class="modal">
     <div class="mtitle">📺 獎勵式廣告</div>
     <div class="mbody">
-      <p class="muted">觀看廣告為這棵樹澆水 — 你賺光點，樓主得靈性值，5% 進入印尼種樹基金。</p>
+      <p class="muted">觀看廣告為這棵樹澆水 — 你賺回音種子，樓主得靈性值，5% 進入印尼種樹基金。</p>
       <div class="adScreen">
         <div id="adContent" style="font-size:.95rem;margin-bottom:8px">🌿 廣告</div>
         <div class="adTimer" id="adTimer">3</div>
@@ -804,9 +804,9 @@ function costumeById(id){ return COSTUMES.find(c=>c.id===id) || COSTUMES[0]; }
 function shuffled(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 const NPC_NAMES = ['小柚','蒼霧','阿樹','琉璃','森森','光光','葉子','露珠'];
 const NPC_CHATS = [
-  '這棵樹好美～ ✨','今天光點賺滿了嗎？','等等去聽易家揚的演唱會！',
+  '這棵樹好美～ ✨','今天回音種子賺滿了嗎？','等等去聽易家揚的演唱會！',
   '我快湊滿 10 股了！','聽說有隱藏種子耶','澆水點又滿了 QQ',
-  '我的樹升 R2 了！','印尼的樹真的會長大喔','+5 光點 GET!','跳舞嗎？💃',
+  '我的樹升 R2 了！','印尼的樹真的會長大喔','+5 回音種子 GET!','跳舞嗎？💃',
 ];
 
 // ---------- state ----------
@@ -1332,7 +1332,7 @@ function renderTower(){
   mine.className = 'floorRow';
   const r = myRank();
   mine.innerHTML = `<div class="rk">R${r.r}</div>
-    <div><div class="fname">🏠 我的樓層 · ${r.name}</div><div class="fsub">${S.trees.length ? S.trees.length+' 棵樹' : '尚未種樹 — 先去澆水賺光點吧'}</div></div>
+    <div><div class="fname">🏠 我的樓層 · ${r.name}</div><div class="fsub">${S.trees.length ? S.trees.length+' 棵樹' : '尚未種樹 — 先去澆水賺回音種子吧'}</div></div>
     <div class="glow" style="background:#8ef0c8"></div>`;
   mine.onclick = () => switchView('myfloor');
   el.appendChild(mine);
@@ -1371,7 +1371,7 @@ function renderFloor(f){
   const seed = SEEDS[f.seed];
   const concertHTML = f.concert ? `
     <div class="floorMeta" id="concertBox">
-      <div class="metaBox">🎤 虛擬演唱會 · Phase 1 MVP（100 人同時在線）· 門票 <b>80 光點</b></div>
+      <div class="metaBox">🎤 虛擬演唱會 · Phase 1 MVP（100 人同時在線）· 門票 <b>80 回音種子</b></div>
       <button class="btn gold sm" id="concertBtn">🎟 購票入場</button>
     </div>` : '';
   $('floorScene').innerHTML = `
@@ -1381,7 +1381,7 @@ function renderFloor(f){
         <p class="desc">${f.sub} · 種子：${seed.name} · 點擊那棵樹（或按澆水鈕），你的角色會走過去澆水</p>
         <div id="floorWorld"></div>
         <div class="sceneBtns">
-          <button class="btn mint" id="waterBtn">💧 澆水（看廣告賺光點）</button>
+          <button class="btn mint" id="waterBtn">💧 澆水（看廣告賺回音種子）</button>
           <button class="btn ghost" id="danceBtn">💃 跳舞</button>
           <button class="btn ghost" onclick="switchView('tower')">🛗 搭電梯離開</button>
         </div>
@@ -1402,14 +1402,14 @@ function renderFloor(f){
     trees: [{seed:f.seed, spirit, x:0.5, size:165, label:`${seed.name} · ${f.rk}`}],
     onTreeClick: ()=> startWater(f, 0),
     chats: f.concert
-      ? ['演唱會要開始了嗎？🎤','我搶到第一排！','易家揚新歌超好聽','門票 80 光點，值得！']
+      ? ['演唱會要開始了嗎？🎤','我搶到第一排！','易家揚新歌超好聽','門票 80 回音種子，值得！']
       : NPC_CHATS,
   });
   $('waterBtn').onclick = ()=> startWater(f, 0);
   $('danceBtn').onclick = ()=>{ scene.danceParty(); scene.say(scene.player,'一起跳舞吧！🎶',2000); };
   const cb = $('concertBtn');
   if (cb) cb.onclick = ()=>{
-    if (S.lp < 80) return toast('光點不足！先去澆水賺 80 光點 💧');
+    if (S.lp < 80) return toast('回音種子不足！先去澆水賺 80 回音種子 💧');
     S.lp -= 80; S.concertSeen = true;
     $('concertBox').innerHTML = `<div class="metaBox" style="flex:1;text-align:center">🎤 <b>LIVE</b> ♪ 一棵樹的回音，可以走多遠？ ♪ · 觀眾 98/100 · 分鏡同步技術</div>`;
     scene.danceParty();
@@ -1461,9 +1461,9 @@ function finishWater(floor, treeIdx){
     seedKey = floor.seed;
   }
   if (seedKey) S.seedWaters[seedKey] = (S.seedWaters[seedKey]||0) + 1;
-  chat(`[系統] 澆水成功：獲得 ${gain} 光點，樓主靈性值 +10（印尼種樹基金 +5%）`, 'gain');
+  chat(`[系統] 澆水成功：獲得 ${gain} 回音種子，樓主靈性值 +10（印尼種樹基金 +5%）`, 'gain');
   activeScene?.celebrate(treeIdx ?? 0, `+${gain}`);
-  if (activeScene) activeScene.say(activeScene.player, `+${gain} 光點！✦`, 1800);
+  if (activeScene) activeScene.say(activeScene.player, `+${gain} 回音種子！🌰`, 1800);
   const ms = $('metaSpirit'), ml = $('metaLeft'), mw = $('metaSeedW');
   if (ms && !floor.mine) ms.textContent = S.npcSpirit[floor.id];
   if (ml) ml.textContent = S.resident?'∞':Math.max(0,waterCap()-S.watersToday);
@@ -1493,7 +1493,7 @@ function renderMyFloor(){
       <div class="rwbody" style="text-align:center;padding:40px 20px">
         <div style="font-size:2.6rem">🌱</div>
         <h2 style="margin:10px 0 6px;font-size:1.05rem">你還沒有自己的樓層</h2>
-        <p class="desc">澆水賺光點 → 兌換樹苗股份（100 光點 = 1 股）→ 湊滿 10 股 + KYC → 種下第一棵樹，成為 R1「初芽小築」的主人。</p>
+        <p class="desc">澆水賺回音種子 → 兌換樹苗股份（100 回音種子 = 1 股）→ 湊滿 10 股 + KYC → 種下第一棵樹，成為 R1「初芽小築」的主人。</p>
         <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;flex-wrap:wrap">
           <button class="btn" onclick="switchView('tower')">🛗 去別人樓層澆水</button>
           <button class="btn gold" onclick="switchView('shop')">🛒 前往樹市集</button>
@@ -1552,7 +1552,7 @@ function renderMyFloor(){
 // ---------- shop ----------
 function bindShop(){
   $('buyShareLp').onclick = ()=>{
-    if (S.lp < 100) return toast('光點不足（需要 100）— 去澆水吧 💧');
+    if (S.lp < 100) return toast('回音種子不足（需要 100）— 去澆水吧 💧');
     S.lp -= 100; S.shares++;
     toast('兌換成功！+1 樹苗股份 🌱', true);
     renderHUD(); maybeAutoTreeHint();
@@ -1676,8 +1676,8 @@ function buildCoreLoop(){
   host.innerHTML = `<div class="stage" id="clStage">
     <div class="clEl" id="clPlayer" style="left:4%;bottom:12px;width:46px;transition:left 1.3s ease-in-out">${avatarSVG(PLAYER_STYLE, false, S.skin)}</div>
     <div class="clEl" style="left:22%;bottom:14px">${treeSVG('sakura',76)}</div>
-    <div class="clEl clIcon" id="clCoin" style="left:47%;bottom:62px;color:#ffd94a;text-shadow:1px 1px 0 #8a6d1f,0 0 8px rgba(232,201,58,.8)">✦</div>
-    <div class="clBadge" style="left:45%;bottom:44px">光點</div>
+    <div class="clEl clIcon" id="clCoin" style="left:47%;bottom:62px;font-size:1.3rem;text-shadow:1px 1px 0 #8a6d1f,0 0 8px rgba(232,201,58,.8)">🌰</div>
+    <div class="clBadge" style="left:45%;bottom:44px">回音種子</div>
     <div class="clEl clIcon" id="clSeed" style="left:65%;bottom:62px;opacity:.25">🌱</div>
     <div class="clBadge" style="left:62%;bottom:44px">樹苗股份</div>
     <div class="clEl clIcon" id="clHouse" style="left:84%;bottom:62px;opacity:.25">🏠</div>
@@ -1697,12 +1697,12 @@ function buildCoreLoop(){
     }, 1700);
     setTimeout(()=>{
       P.classList.remove('pouring2');
-      cap.textContent = '③ 澆水 1 次 ≈ 5-8 光點（連續登入上限↑）';
+      cap.textContent = '③ 澆水 1 次 ≈ 5-8 回音種子（連續登入上限↑）';
       flyDot(stage, 25, 46);
       setTimeout(()=>$('clCoin')?.classList.add('pulseG'), 900);
     }, 3500);
     setTimeout(()=>{
-      cap.textContent = '④ 100 光點 = 1 樹苗股份（$37.5）';
+      cap.textContent = '④ 100 回音種子 = 1 樹苗股份（$37.5）';
       flyDot(stage, 48, 64);
       setTimeout(()=>{ const s=$('clSeed'); if(s){ s.style.opacity='1'; s.classList.add('pop'); } }, 900);
     }, 5300);
@@ -1725,7 +1725,7 @@ function buildESG(){
   const host = $('esgStage'); if (!host) return;
   const R = 96;
   const nodes = [
-    {a:-90, icon:'🎮', lbl:'玩家消費', sub:'購樹資產 · 光點'},
+    {a:-90, icon:'🎮', lbl:'玩家消費', sub:'購樹資產 · 回音種子'},
     {a:0,   icon:'🌱', lbl:'印尼種植', sub:'中爪哇 · 蘇門答臘'},
     {a:90,  icon:'🏢', lbl:'企業 CSR', sub:'威剛 · 驊訊 · 銘旺'},
     {a:180, icon:'📡', lbl:'TreeLink', sub:'QR 連回遊戲樓層'},
@@ -1808,7 +1808,7 @@ const ACHS = [
   {id:'citizen',name:'世界樹公民', desc:'完成 KYC，成為居民', check:()=>S.resident},
   {id:'fan',    name:'第一排歌迷', desc:'參加一場虛擬演唱會', check:()=>S.concertSeen},
   {id:'week',   name:'七日之約',   desc:'連續登入 7 天（澆水上限提升至 100）', check:()=>S.streak>=7, prog:()=>`連續 ${S.streak}/7 天`},
-  {id:'rich',   name:'光點大亨',   desc:'累積持有 500 光點', check:()=>S.lp>=500},
+  {id:'rich',   name:'回音種子大亨',   desc:'累積持有 500 回音種子', check:()=>S.lp>=500},
 ];
 function checkAchievements(){
   let newly = [];
@@ -1854,7 +1854,7 @@ function renderSkinShop(){
   grid.innerHTML = COSTUMES.map(c=>{
     const owned = S.ownedSkins.includes(c.id);
     const equipped = S.skin === c.id;
-    const priceLbl = c.price===0 ? '免費' : (c.cur==='cash' ? `$${c.price}` : `✦ ${c.price}`);
+    const priceLbl = c.price===0 ? '免費' : (c.cur==='cash' ? `$${c.price}` : `🌰 ${c.price}`);
     let btn;
     if (equipped) btn = `<button class="btn sm ghost" disabled>目前穿著中</button>`;
     else if (owned) btn = `<button class="btn sm mint" data-equip="${c.id}">穿上這套</button>`;
@@ -1877,7 +1877,7 @@ function buySkin(id){
     if (S.cash < c.price) return toast(`現金不足（需要 $${c.price}）`);
     S.cash -= c.price;
   } else {
-    if (S.lp < c.price) return toast(`光點不足（需要 ${c.price}）— 去澆水吧 💧`);
+    if (S.lp < c.price) return toast(`回音種子不足（需要 ${c.price}）— 去澆水吧 💧`);
     S.lp -= c.price;
   }
   S.ownedSkins.push(id);
@@ -1927,7 +1927,7 @@ renderAch();
 renderSkinShop();
 checkAchievements();
 chat('[系統] 歡迎來到 W.O.T 威奧世界樹 — EchoTree 回音樹', 'imp');
-chat('[系統] 點擊地面移動角色，搭電梯造訪其他樓層，澆水賺光點！', 'sys');
+chat('[系統] 點擊地面移動角色，搭電梯造訪其他樓層，澆水賺回音種子！', 'sys');
 </script>
 </body>
 </html>
