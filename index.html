@@ -194,15 +194,73 @@ body{
 .world .cloud{position:absolute;background:#fff;border-radius:99px;filter:blur(6px);opacity:.85;animation:cloudDrift linear infinite}
 @keyframes cloudDrift{from{transform:translateX(-140px)}to{transform:translateX(1300px)}}
 .world .mapName{
-  position:absolute;top:10px;right:12px;z-index:60;pointer-events:none;
+  position:absolute;top:10px;right:12px;z-index:900;pointer-events:none;
   color:#fff;font-size:.8rem;font-weight:800;letter-spacing:.5px;
   background:rgba(10,13,28,.5);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px 12px;
 }
 .world .hint{
-  position:absolute;top:10px;left:10px;z-index:60;pointer-events:none;
+  position:absolute;top:10px;left:10px;z-index:900;pointer-events:none;
   font-size:.68rem;color:#fff;font-weight:600;
   background:rgba(10,13,28,.5);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px 11px;
 }
+
+/* ---------- scenery layers (parallax depth) ---------- */
+.world .hills{position:absolute;left:0;right:0;pointer-events:none;line-height:0}
+.world .hills svg{width:100%;height:100%;display:block}
+.world .haze{position:absolute;left:0;right:0;pointer-events:none;z-index:5}
+.world .rays{position:absolute;inset:0;pointer-events:none;z-index:820;mix-blend-mode:screen;opacity:.26}
+.world .vig{position:absolute;inset:0;pointer-events:none;z-index:830;
+  box-shadow:inset 0 0 58px 16px rgba(10,12,28,.32), inset 0 -24px 42px -14px rgba(10,12,28,.24)}
+
+/* ground props */
+.prop{position:absolute;transform-origin:bottom center;pointer-events:none;
+  filter:drop-shadow(0 2px 2px rgba(20,30,15,.3))}
+.prop.sway{animation:propSway 4.5s ease-in-out infinite}
+@keyframes propSway{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg)}}
+
+/* ambient particles */
+.amb{position:absolute;pointer-events:none;z-index:810;border-radius:50%}
+.amb.pollen{background:radial-gradient(circle at 35% 35%,#fff,rgba(255,244,190,.15));
+  box-shadow:0 0 7px rgba(255,240,170,.9);animation:ambDrift linear infinite}
+.amb.fire{background:radial-gradient(circle at 35% 35%,#fff,rgba(160,255,190,.15));
+  box-shadow:0 0 10px rgba(120,255,180,.95);animation:ambDrift linear infinite, ambBlink 2.2s ease-in-out infinite}
+.amb.snowLeaf{border-radius:40% 60% 45% 55%;animation:leafFall linear infinite}
+@keyframes ambDrift{
+  0%{transform:translate(0,0);opacity:0}
+  12%{opacity:.95}
+  88%{opacity:.85}
+  100%{transform:translate(38px,-120px);opacity:0}
+}
+@keyframes ambBlink{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes leafFall{
+  0%{transform:translate(0,-20px) rotate(0deg);opacity:0}
+  10%{opacity:.9}
+  90%{opacity:.8}
+  100%{transform:translate(-70px,190px) rotate(320deg);opacity:0}
+}
+
+/* click-to-move destination marker (RO style) */
+.moveMark{position:absolute;width:34px;height:18px;transform:translate(-50%,-50%);pointer-events:none;z-index:6;
+  border:2px solid rgba(120,255,170,.95);border-radius:50%;
+  box-shadow:0 0 12px rgba(80,240,150,.8), inset 0 0 8px rgba(120,255,170,.5);
+  animation:markPing .7s ease-out forwards}
+@keyframes markPing{
+  0%{transform:translate(-50%,-50%) scale(.35);opacity:0}
+  35%{opacity:1}
+  100%{transform:translate(-50%,-50%) scale(1.5);opacity:0}
+}
+
+/* minimap radar */
+.minimap{position:absolute;right:12px;top:42px;width:92px;height:62px;z-index:900;pointer-events:none;
+  background:rgba(8,11,26,.62);border:1px solid rgba(255,255,255,.18);border-radius:10px;overflow:hidden;
+  box-shadow:0 4px 12px rgba(0,0,0,.4), inset 0 0 12px rgba(0,0,0,.4)}
+.minimap::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent 0 11px,rgba(140,180,255,.09) 11px 12px),
+             repeating-linear-gradient(90deg,transparent 0 11px,rgba(140,180,255,.09) 11px 12px)}
+.mmDot{position:absolute;width:5px;height:5px;border-radius:50%;transform:translate(-50%,-50%);
+  background:#8ab4ff;box-shadow:0 0 5px rgba(138,180,255,.9)}
+.mmDot.me{width:7px;height:7px;background:var(--gold);box-shadow:0 0 9px rgba(255,211,90,1);z-index:2}
+.mmDot.tree{background:#5be6a0;box-shadow:0 0 6px rgba(91,230,160,.9);width:6px;height:6px}
 
 /* sprites — big head, small body */
 .sprite{position:absolute;width:52px;transform:translate(-50%,-100%);pointer-events:none}
@@ -241,7 +299,7 @@ body{
 .wspot{
   position:absolute;width:30px;height:16px;border-radius:50%;transform:translate(-50%,-50%);
   border:2px dashed rgba(255,255,255,.8);
-  background:rgba(90,160,255,.25);pointer-events:none;
+  background:rgba(90,160,255,.25);pointer-events:none;z-index:5;
   box-shadow:0 0 6px rgba(90,160,255,.4);
 }
 .wspot.busy{border-style:solid;border-color:var(--hp);background:rgba(62,224,138,.35);animation:pulse 1s infinite}
@@ -777,15 +835,15 @@ const RANKS = [
 
 const NPC_FLOORS = [
   {id:'concert', rk:'R7', name:'易家揚 · 巨樹神冠音樂廳', sub:'虛擬演唱會 · 星光音樂廳', seed:'neon',  glow:'#ff9c4a', concert:true,
-   sky:'linear-gradient(180deg,#2a2050,#6a4a90)', ground:'#5a4a80'},
+   sky:'linear-gradient(180deg,#1a1440,#4a3070 55%,#7a5aa0)', ground:'#4a3d72', theme:'night'},
   {id:'adata',   rk:'R6', name:'威剛冠名森林 · 曦光殿閣', sub:'企業 ESG 樓層 · 60,000 棵柚木', seed:'jade', glow:'#ffd98a',
-   sky:'linear-gradient(180deg,#f0c060,#f8e0a0)', ground:'#7aa04a'},
+   sky:'linear-gradient(180deg,#e89a48,#f5c878 50%,#fce6b0)', ground:'#86a24e', theme:'dusk'},
   {id:'whale',   rk:'R5', name:'鯨魚玩家「蒼霧」的蘊靈母樹', sub:'巨樹貫穿 · 粒子特效全開', seed:'blue', glow:'#8ecdf0',
-   sky:'linear-gradient(180deg,#4a70b0,#90c0e8)', ground:'#5a90a0'},
+   sky:'linear-gradient(180deg,#3d66aa,#7ab2e0 55%,#b8dcf2)', ground:'#5a94a6', theme:'aqua'},
   {id:'mid',     rk:'R3', name:'「小柚」的翠林雅苑', sub:'陽台花園 · 歡迎來澆水', seed:'sakura', glow:'#ffb3d9',
-   sky:'linear-gradient(180deg,#88c8f0,#d0eafc)', ground:'#7ab454'},
+   sky:'linear-gradient(180deg,#5ea8e8,#9fd4f5 55%,#d6eefb)', ground:'#7ab454', theme:'meadow'},
   {id:'newbie',  rk:'R1', name:'「阿樹」的初芽小築', sub:'剛種下第一棵樹的新居民', seed:'red', glow:'#ff8a9b',
-   sky:'linear-gradient(180deg,#88c8f0,#d0eafc)', ground:'#7ab454'},
+   sky:'linear-gradient(180deg,#5ea8e8,#9fd4f5 55%,#d6eefb)', ground:'#7ab454', theme:'meadow'},
 ];
 
 const ADS = [
@@ -913,13 +971,22 @@ function treeSVG(seedKey, size=140, spirit=0){
         <stop offset="100%" stop-color="${s.color1}"/>
       </radialGradient>
     </defs>
-    <ellipse cx="50" cy="110" rx="26" ry="5" fill="rgba(0,0,0,.28)"/>
-    <path d="M46 110 Q44 78 47 62 L53 62 Q56 78 54 110 Z" fill="${s.trunk}"/>
+    <ellipse cx="50" cy="111" rx="30" ry="6" fill="rgba(20,30,15,.3)"/>
+    <ellipse cx="50" cy="110" rx="20" ry="3.6" fill="rgba(20,30,15,.22)"/>
+    <path d="M44 110 Q43 80 47 62 L53 62 Q57 80 56 110 Z" fill="${s.trunk}"/>
+    <path d="M47 62 Q46 84 45.5 110 L49 110 Q49 84 50 62 Z" fill="rgba(255,255,255,.14)"/>
     <path d="M48 78 Q36 70 32 60" stroke="${s.trunk}" stroke-width="3.4" fill="none" stroke-linecap="round"/>
     <path d="M52 74 Q64 66 68 56" stroke="${s.trunk}" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    <!-- canopy: shaded base, main mass, lit highlights -->
+    <circle cx="50" cy="42" r="27" fill="${s.color1}" opacity="${glow*.95}"/>
+    <circle cx="31" cy="54" r="15.5" fill="${s.color1}" opacity="${glow*.9}"/>
+    <circle cx="69" cy="51" r="16.5" fill="${s.color1}" opacity="${glow*.9}"/>
     <circle cx="50" cy="38" r="26" fill="url(#g_${uid})" opacity="${glow}"/>
     <circle cx="31" cy="52" r="15" fill="url(#g_${uid})" opacity="${glow*.92}"/>
     <circle cx="69" cy="49" r="16" fill="url(#g_${uid})" opacity="${glow*.92}"/>
+    <circle cx="41" cy="28" r="9.5" fill="${s.color2}" opacity="${glow*.55}"/>
+    <circle cx="57" cy="24" r="6" fill="#fff" opacity="${glow*.22}"/>
+    <circle cx="27" cy="46" r="4.6" fill="${s.color2}" opacity="${glow*.4}"/>
     <circle cx="50" cy="38" r="33" fill="${s.color2}" opacity="${.1+spirit/900}"/>
     ${stars}
   </svg>`;
@@ -1011,33 +1078,139 @@ function destroyScene(){
   if (activeScene){
     activeScene.dead = true;
     activeScene.timers.forEach(clearInterval);
+    activeScene.ro && activeScene.ro.disconnect();
     activeScene = null;
   }
 }
 
 function tileBG(base){
   return `
-    repeating-linear-gradient(63deg, transparent 0 26px, rgba(0,0,0,.07) 26px 27px),
-    repeating-linear-gradient(-63deg, transparent 0 26px, rgba(0,0,0,.07) 26px 27px),
-    repeating-linear-gradient(63deg, transparent 0 52px, rgba(255,255,255,.05) 52px 53px),
+    radial-gradient(55% 38% at 18% 26%, rgba(255,255,255,.09), transparent 72%),
+    radial-gradient(48% 34% at 78% 52%, rgba(0,0,0,.08), transparent 72%),
+    radial-gradient(42% 30% at 46% 84%, rgba(255,255,255,.07), transparent 72%),
+    repeating-linear-gradient(63deg, transparent 0 26px, rgba(0,0,0,.055) 26px 27px),
+    repeating-linear-gradient(-63deg, transparent 0 26px, rgba(0,0,0,.055) 26px 27px),
+    repeating-linear-gradient(63deg, transparent 0 52px, rgba(255,255,255,.04) 52px 53px),
     linear-gradient(180deg, ${base} 0%, ${shade(base,-18)} 100%)`;
 }
 function shade(hex, pct){
+  if (typeof hex !== 'string' || hex[0] !== '#') return hex;
   const n = parseInt(hex.slice(1),16);
   const f = c => Math.max(0,Math.min(255, c + Math.round(255*pct/100)));
   const r=f(n>>16), g=f((n>>8)&255), b=f(n&255);
   return `rgb(${r},${g},${b})`;
 }
 
+/* =========================================================
+   SCENERY — parallax hills, ground props, ambient particles
+========================================================= */
+const MAP_THEMES = {
+  meadow:{hillFar:'#96bcab', hillNear:'#4d7d43', treeline:'#37632f', stars:false,
+    haze:'rgba(226,242,255,.55)', ray:'rgba(255,246,205,.5)',
+    props:['grass','grass','grass','flower','flower','rock','mushroom','bush'],
+    leaf:'#5f9448', leafDark:'#3f6b32', petal:'#ffdf7a', stone:'#9aa2ae', cap:'#d96a5a',
+    amb:'pollen', ambN:14, leaves:true},
+  dusk:{hillFar:'#c99f79', hillNear:'#7a5233', treeline:'#553a24', stars:false,
+    haze:'rgba(255,222,160,.5)', ray:'rgba(255,206,130,.55)',
+    props:['grass','grass','flower','rock','bush','bush'],
+    leaf:'#8a9442', leafDark:'#5f6a2c', petal:'#ffd166', stone:'#a89a86', cap:'#c8703f',
+    amb:'pollen', ambN:16, leaves:true},
+  aqua:{hillFar:'#7ea6c0', hillNear:'#39657f', treeline:'#2b4d60', stars:false,
+    haze:'rgba(205,238,255,.55)', ray:'rgba(200,238,255,.45)',
+    props:['grass','rock','rock','flower','bush'],
+    leaf:'#4f9a86', leafDark:'#356e60', petal:'#9fe0ff', stone:'#8fa3b4', cap:'#6fb6c8',
+    amb:'pollen', ambN:12, leaves:false},
+  night:{hillFar:'#4d4080', hillNear:'#281f50', treeline:'#1b1540', stars:true,
+    haze:'rgba(130,115,200,.4)', ray:'rgba(186,166,255,.4)',
+    props:['grass','rock','mushroom','mushroom','bush'],
+    leaf:'#4a6a5a', leafDark:'#2f4a3e', petal:'#c7a6ff', stone:'#6a6488', cap:'#b478d8',
+    amb:'fire', ambN:18, leaves:false},
+  stone:{hillFar:'#818ab2', hillNear:'#474c72', treeline:'#373b5c', stars:true,
+    haze:'rgba(195,205,245,.45)', ray:'rgba(205,218,255,.4)',
+    props:['rock','rock','grass','bush'],
+    leaf:'#5f7a6a', leafDark:'#425849', petal:'#cdd6ff', stone:'#8d94ad', cap:'#8e86b8',
+    amb:'pollen', ambN:11, leaves:false},
+};
+
+/* rolling-hill silhouette, optionally with a treeline along the ridge */
+function hillSVG(color, amp, seed, treeColor){
+  let r = seed;
+  const rnd = ()=>{ r = (r*9301+49297)%233280; return r/233280; };
+  const n = 7, ys = [];
+  for (let i=0;i<=n;i++) ys.push(100 - amp*(0.4 + 0.6*rnd()));
+  let d = `M0,100 L0,${ys[0].toFixed(1)}`;
+  for (let i=1;i<=n;i++){
+    const x0=(i-1)*100/n, x1=i*100/n, mx=(x0+x1)/2;
+    const cy = Math.min(ys[i-1], ys[i]) - 4*rnd();
+    d += ` Q${mx.toFixed(1)},${cy.toFixed(1)} ${x1.toFixed(1)},${ys[i].toFixed(1)}`;
+  }
+  d += ' L100,100 Z';
+  let trees = '';
+  if (treeColor){
+    for (let i=0;i<14;i++){
+      const x = 2 + rnd()*96;
+      const seg = Math.min(n, Math.max(0, Math.round(x/100*n)));
+      const y = ys[seg] + 1.5;
+      const h = 4 + rnd()*5;
+      trees += `<ellipse cx="${x.toFixed(1)}" cy="${(y-h*0.55).toFixed(1)}" rx="${(h*0.42).toFixed(1)}" ry="${(h*0.62).toFixed(1)}" fill="${treeColor}"/>`;
+    }
+  }
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="${d}" fill="${color}"/>${trees}</svg>`;
+}
+
+/* small ground decorations */
+const PROP_SVG = {
+  grass:t=>`<svg width="28" height="20" viewBox="0 0 28 20">
+    <path d="M6 20 Q4 11 8 3" stroke="${t.leaf}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M12 20 Q12 9 11 2" stroke="${t.leafDark}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M17 20 Q19 11 22 5" stroke="${t.leaf}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M22 20 Q24 14 26 10" stroke="${t.leafDark}" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`,
+  bush:t=>`<svg width="42" height="28" viewBox="0 0 42 28">
+    <ellipse cx="21" cy="26" rx="17" ry="2.5" fill="rgba(0,0,0,.18)"/>
+    <circle cx="12" cy="17" r="9" fill="${t.leafDark}"/><circle cx="30" cy="18" r="8.5" fill="${t.leafDark}"/>
+    <circle cx="21" cy="13" r="10.5" fill="${t.leaf}"/>
+    <circle cx="17" cy="11" r="3.4" fill="rgba(255,255,255,.22)"/></svg>`,
+  flower:t=>`<svg width="20" height="26" viewBox="0 0 20 26">
+    <path d="M10 26 Q9 17 10 11" stroke="${t.leafDark}" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <path d="M10 19 Q5 17 3 13" stroke="${t.leaf}" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <g transform="translate(10,8)">
+      <circle cx="0" cy="-4" r="3.1" fill="${t.petal}"/><circle cx="3.8" cy="-1.2" r="3.1" fill="${t.petal}"/>
+      <circle cx="2.3" cy="3.4" r="3.1" fill="${t.petal}"/><circle cx="-2.3" cy="3.4" r="3.1" fill="${t.petal}"/>
+      <circle cx="-3.8" cy="-1.2" r="3.1" fill="${t.petal}"/>
+      <circle cx="0" cy="0" r="2.2" fill="#fff6d8"/></g></svg>`,
+  rock:t=>`<svg width="30" height="20" viewBox="0 0 30 20">
+    <ellipse cx="15" cy="18" rx="12" ry="2.4" fill="rgba(0,0,0,.2)"/>
+    <path d="M4 18 L7 8 L14 4 L23 7 L26 18 Z" fill="${t.stone}" stroke="rgba(0,0,0,.18)" stroke-width=".8"/>
+    <path d="M7 8 L14 4 L16 10 Z" fill="rgba(255,255,255,.25)"/></svg>`,
+  mushroom:t=>`<svg width="22" height="24" viewBox="0 0 22 24">
+    <ellipse cx="11" cy="22.5" rx="8" ry="1.8" fill="rgba(0,0,0,.2)"/>
+    <path d="M8 22 Q7.5 14 11 13 Q14.5 14 14 22 Z" fill="#f0e6d2"/>
+    <path d="M2 13 Q4 4 11 4 Q18 4 20 13 Q11 16 2 13 Z" fill="${t.cap}"/>
+    <circle cx="7.5" cy="9.5" r="1.7" fill="rgba(255,255,255,.75)"/>
+    <circle cx="14" cy="8.2" r="1.3" fill="rgba(255,255,255,.65)"/>
+    <circle cx="11.5" cy="12" r="1.1" fill="rgba(255,255,255,.55)"/></svg>`,
+};
+
 function makeScene(container, cfg){
   destroyScene();
   const world = document.createElement('div');
   world.className = 'world';
+  const T = MAP_THEMES[cfg.theme] || MAP_THEMES.meadow;
+  const seed = Math.floor(Math.random()*100000);
+  const HZ = 40;   // horizon: ground plane starts at 40% of world height
   world.innerHTML = `
     <div class="sky" style="background:${cfg.sky || 'linear-gradient(180deg,#88c8f0,#d0eafc)'}"></div>
-    <div class="groundTiles" style="background:${tileBG(cfg.ground || '#7ab454')}"></div>
+    <div class="hills" style="top:${HZ-21}%;height:21%;z-index:1;opacity:.6">${hillSVG(T.hillFar, 62, seed, null)}</div>
+    <div class="hills" style="top:${HZ-14}%;height:14%;z-index:2;opacity:.92">${hillSVG(T.hillNear, 58, seed+77, T.treeline)}</div>
+    <div class="haze" style="top:${HZ-5}%;height:46px;z-index:3;
+      background:linear-gradient(180deg,transparent,${T.haze} 45%,transparent)"></div>
+    <div class="groundTiles" style="background:${tileBG(cfg.ground || '#7ab454')};z-index:4"></div>
+    <div class="rays" style="background:linear-gradient(103deg,transparent 10%,${T.ray} 15%,transparent 21%,
+      transparent 37%,${T.ray} 43%,transparent 49%,transparent 67%,${T.ray} 72%,transparent 78%)"></div>
+    <div class="vig"></div>
     <div class="mapName">${cfg.mapName || ''}</div>
-    <div class="hint">🖱 點擊地面移動 · WASD／方向鍵</div>`;
+    <div class="hint">🖱 點擊地面移動 · WASD／方向鍵</div>
+    <div class="minimap" id="mmBox"></div>`;
   container.innerHTML = '';
   container.appendChild(world);
 
@@ -1048,13 +1221,26 @@ function makeScene(container, cfg){
   const clampY = y => Math.max(walkMinY(), Math.min(walkMaxY(), y));
   const clampX = x => Math.max(26, Math.min(W()-26, x));
 
+  // stars on night maps
+  if (T.stars){
+    for (let i=0;i<26;i++){
+      const s = document.createElement('div');
+      const sz = rand(1.2,2.6);
+      s.style.cssText = `position:absolute;left:${rand(1,99)}%;top:${rand(2,34)}%;width:${sz}px;height:${sz}px;
+        border-radius:50%;background:#fff;opacity:${rand(.3,.9)};z-index:1;
+        box-shadow:0 0 5px rgba(255,255,255,.8);animation:ambBlink ${rand(2,5)}s ease-in-out infinite`;
+      world.appendChild(s);
+    }
+  }
+
   // clouds (day maps)
   if (!cfg.noClouds){
     for (let i=0;i<3;i++){
       const c = document.createElement('div');
       c.className = 'cloud';
       const w = rand(70,130);
-      c.style.cssText = `width:${w}px;height:${w*0.32}px;top:${rand(6,60)}px;left:${rand(-100,900)}px;animation-duration:${rand(60,110)}s`;
+      c.style.cssText = `width:${w}px;height:${w*0.32}px;top:${rand(6,60)}px;left:${rand(-100,900)}px;
+        animation-duration:${rand(60,110)}s;z-index:2`;
       world.appendChild(c);
     }
   }
@@ -1094,8 +1280,55 @@ function makeScene(container, cfg){
     const orb = document.createElement('div');
     orb.className = 'orb';
     orb.style.left = '50%'; orb.style.top = (H()*0.56)+'px';
+    orb.style.zIndex = Math.floor(H()*0.56);
     orb.innerHTML = `<div class="core"></div><div class="olabel">世界樹之心</div>`;
     world.appendChild(orb);
+  }
+
+  // --- ground props: grass, flowers, rocks, mushrooms, bushes ---
+  {
+    const treePos = (cfg.trees||[]).map(t=>t._pos).filter(Boolean);
+    const count = cfg.propCount ?? 26;
+    for (let i=0;i<count;i++){
+      const px = rand(10, Math.max(20, W()-10));
+      const py = rand(H()*0.43, walkMaxY());
+      // keep clear of tree trunks and the lobby orb
+      if (treePos.some(p=>Math.abs(p.x-px) < 78 && Math.abs(p.y-py) < 52)) continue;
+      if (cfg.orb && Math.abs(px - W()/2) < 70 && Math.abs(py - H()*0.56) < 60) continue;
+      const kind = pick(T.props);
+      const depth = (py - H()*0.43) / Math.max(1, walkMaxY() - H()*0.43); // 0 far → 1 near
+      const sc = 0.5 + depth*0.85;
+      const el = document.createElement('div');
+      el.className = 'prop' + (kind==='grass'||kind==='flower' ? ' sway' : '');
+      el.style.cssText = `left:${px}px;top:${py}px;z-index:${Math.floor(py)};
+        transform:translate(-50%,-100%) scale(${sc.toFixed(2)});opacity:${(0.62+depth*0.38).toFixed(2)};
+        animation-delay:${(Math.random()*4).toFixed(1)}s`;
+      el.innerHTML = PROP_SVG[kind](T);
+      world.appendChild(el);
+    }
+  }
+
+  // --- ambient particles: pollen / fireflies + falling leaves ---
+  {
+    for (let i=0;i<(T.ambN||12);i++){
+      const p = document.createElement('div');
+      const sz = rand(2,4.2);
+      p.className = 'amb ' + T.amb;
+      p.style.cssText = `left:${rand(2,98)}%;top:${rand(46,96)}%;width:${sz}px;height:${sz}px;
+        animation-duration:${rand(7,15)}s, 2.4s;animation-delay:${-rand(0,12)}s`;
+      world.appendChild(p);
+    }
+    if (T.leaves){
+      for (let i=0;i<7;i++){
+        const l = document.createElement('div');
+        l.className = 'amb snowLeaf';
+        const sz = rand(5,9);
+        l.style.cssText = `left:${rand(5,95)}%;top:${rand(30,55)}%;width:${sz}px;height:${sz*0.7}px;
+          background:${i%2 ? T.leaf : T.petal};opacity:.85;
+          animation-duration:${rand(9,16)}s;animation-delay:${-rand(0,14)}s`;
+        world.appendChild(l);
+      }
+    }
   }
 
   // --- sprite factory ---
@@ -1149,6 +1382,39 @@ function makeScene(container, cfg){
     });
     npc.isNpc = true;
   }
+
+  // --- minimap radar ---
+  {
+    const mm = world.querySelector('#mmBox');
+    const toMM = (x,y)=>({
+      mx: Math.max(3, Math.min(89, x / Math.max(1,W()) * 92)),
+      my: Math.max(3, Math.min(59, (y - walkMinY()) / Math.max(1, walkMaxY()-walkMinY()) * 62)),
+    });
+    (cfg.trees||[]).forEach(t=>{
+      if (!t._pos) return;
+      const {mx,my} = toMM(t._pos.x, t._pos.y);
+      const d = document.createElement('div');
+      d.className = 'mmDot tree';
+      d.style.left = mx+'px'; d.style.top = my+'px';
+      mm.appendChild(d);
+    });
+    scene.entities.forEach(ent=>{
+      const d = document.createElement('div');
+      d.className = 'mmDot' + (ent.me ? ' me' : '');
+      mm.appendChild(d);
+      ent.mmDot = d;
+    });
+    scene.updateMM = ()=>{
+      scene.entities.forEach(ent=>{
+        if (!ent.mmDot) return;
+        const {mx,my} = toMM(ent.x, ent.y);
+        ent.mmDot.style.left = mx+'px';
+        ent.mmDot.style.top = my+'px';
+      });
+    };
+    scene.updateMM();
+  }
+
   scene.timers.push(setInterval(()=>{
     scene.entities.filter(e=>e.isNpc).forEach(n=>{
       if (Math.random() < 0.55){
@@ -1178,6 +1444,11 @@ function makeScene(container, cfg){
     const r = world.getBoundingClientRect();
     player.tx = clampX(e.clientX - r.left);
     player.ty = clampY(e.clientY - r.top);
+    const mk = document.createElement('div');
+    mk.className = 'moveMark';
+    mk.style.left = player.tx+'px'; mk.style.top = player.ty+'px';
+    world.appendChild(mk);
+    setTimeout(()=>mk.remove(), 750);
   });
 
   scene.walkTo = (ent, x, y) => new Promise(res=>{
@@ -1290,10 +1561,21 @@ function makeScene(container, cfg){
       const sc = 0.78 + 0.3*Math.max(0,Math.min(1,t));
       ent.el.querySelector('.bodywrap').style.scale = `${ent.dir*sc} ${sc}`;
     });
+    scene.updateMM && scene.updateMM();
   }
   scene.timers.push(setInterval(tick, 28));
 
   activeScene = scene;
+  if (world.clientWidth < 40 && typeof ResizeObserver !== 'undefined'){
+    const ro = new ResizeObserver(()=>{
+      if (activeScene === scene && world.clientWidth >= 40){
+        ro.disconnect();
+        makeScene(container, cfg);
+      }
+    });
+    ro.observe(world);
+    scene.ro = ro;
+  }
   return scene;
 }
 
@@ -1360,8 +1642,8 @@ function renderTower(){
   makeScene($('lobbyScene'), {
     orb:true, npcCount:5,
     mapName:'prt_lobby · 靜謐之庭',
-    sky:'linear-gradient(180deg,#4a5a94,#8a97c4)',
-    ground:'#8a8ca8', noClouds:false,
+    sky:'linear-gradient(180deg,#3d4a80,#7a86b8 55%,#aab4d8)',
+    ground:'#8a8ca8', noClouds:false, theme:'stone', propCount:22,
     trees:[],
     chats:['歡迎來到靜謐之庭～','電梯在下面的視窗！','先去 R3 小柚家澆水吧','世界樹之心好漂亮…','你今天澆水了嗎？💧','聽說 R7 有演唱會！'],
   });
@@ -1417,7 +1699,7 @@ function renderFloor(f){
   const scene = makeScene($('floorWorld'), {
     npcCount: 4,
     mapName: `${f.rk.toLowerCase()}_floor · ${seed.name}`,
-    sky: f.sky, ground: f.ground,
+    sky: f.sky, ground: f.ground, theme: f.theme,
     noClouds: f.concert,
     trees: [{seed:f.seed, spirit, x:0.5, size:165, label:`${seed.name} · ${f.rk}`}],
     onTreeClick: ()=> startWater(f, 0),
@@ -1554,8 +1836,8 @@ function renderMyFloor(){
   const scene = makeScene($('myWorld'), {
     npcCount: 3,
     mapName:'my_floor · ' + r.name,
-    sky:'linear-gradient(180deg,#88c8f0,#d0eafc)',
-    ground:'#7ab454',
+    sky:'linear-gradient(180deg,#5ea8e8,#9fd4f5 55%,#d6eefb)',
+    ground:'#7ab454', theme:'meadow', propCount:30,
     trees: shown.map((t,i)=>({
       seed:t.seed, spirit:t.spirit,
       x: shown.length===1 ? 0.5 : 0.18 + 0.64*i/(shown.length-1),
