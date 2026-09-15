@@ -373,7 +373,25 @@ body{
 #elevator .inside{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.2rem}
 #elevFloor{font-size:1.2rem;font-weight:800;color:var(--gold)}
 
-#adModal .adScreen{background:var(--inset);border:1px solid var(--inset-bd);border-radius:var(--radius);padding:20px;text-align:center;margin:10px 0;color:#fff}
+#adModal .adScreen{position:relative;background:#05070f;border:1px solid var(--inset-bd);
+  border-radius:var(--radius);margin:10px 0;overflow:hidden;aspect-ratio:16/9}
+#adModal video{width:100%;height:100%;display:block;object-fit:cover;background:#05070f}
+.adChip{position:absolute;top:9px;background:rgba(8,11,26,.74);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:.64rem;font-weight:800;border-radius:999px;padding:3px 10px;letter-spacing:.5px}
+.adChip.l{left:9px}
+.adChip.r{right:9px;font-weight:700}
+.adChip.r b{color:var(--gold);font-variant-numeric:tabular-nums}
+.adSound{position:absolute;right:9px;bottom:14px;width:32px;height:32px;border-radius:50%;cursor:pointer;
+  background:rgba(8,11,26,.74);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;transition:.15s;font-family:inherit}
+.adSound:hover{background:rgba(30,40,80,.85);transform:scale(1.08)}
+.adProg{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.16)}
+.adProg i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd68a,var(--gold));
+  box-shadow:0 0 8px rgba(255,211,90,.75)}
+.adPlay{position:absolute;inset:0;margin:auto;width:160px;height:42px;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:inherit;
+  border:1px solid rgba(255,255,255,.28);border-radius:999px;font-size:.88rem;font-weight:700;
+  box-shadow:0 6px 20px rgba(59,99,224,.5)}
 #adModal .adTimer{font-size:2.2rem;font-weight:800;color:var(--gold);text-shadow:0 0 14px rgba(255,211,90,.6)}
 .splitRow{display:flex;gap:5px;margin-top:12px}
 .splitRow .seg{border-radius:999px;padding:6px 4px;font-size:.65rem;text-align:center;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.4)}
@@ -751,9 +769,14 @@ label{font-size:.76rem;color:var(--ink2);display:block;margin:10px 0 4px;font-we
     <div class="mbody">
       <p class="muted">觀看廣告為這棵樹澆水 — 你賺回音種子，樓主得靈性值，5% 進入印尼種樹基金。</p>
       <div class="adScreen">
-        <div id="adContent" style="font-size:.95rem;margin-bottom:8px">🌿 廣告</div>
-        <div class="adTimer" id="adTimer">3</div>
+        <video id="adVideo" playsinline muted preload="auto"></video>
+        <div class="adChip l">廣告 AD</div>
+        <div class="adChip r">還需 <b id="adTimer">7</b> 秒</div>
+        <button class="adSound" id="adSound" type="button" title="開啟／關閉聲音">🔇</button>
+        <div class="adProg"><i id="adProg"></i></div>
+        <button class="adPlay hidden" id="adPlay" type="button">▶ 播放廣告</button>
       </div>
+      <p class="muted" id="adTitle" style="text-align:center;margin-top:8px"></p>
       <div class="splitRow">
         <div class="seg" style="flex:50;background:#5a6ab0">50% 項目方</div>
         <div class="seg" style="flex:25;background:#c9973a">25% 你</div>
@@ -847,12 +870,13 @@ const NPC_FLOORS = [
 ];
 
 const ADS = [
-  '🌿 威剛冠名森林 · ESG 永續形象廣告',
-  '🎵 易家揚新單曲《一棵樹的回音》搶先聽',
-  '🌏 驊訊科技 · 中爪哇植樹紀錄片',
-  '🍃 銘旺 · TreeLink 認證：掃描 QR 看見你的樹',
-  '✨ 回音樹 × 印尼樹農：一份收入，一片森林',
+  {f:'adata',    t:'🌿 威剛冠名森林 · ESG 永續形象廣告'},
+  {f:'song',     t:'🎵 易家揚新單曲《一棵樹的回音》搶先聽'},
+  {f:'doc',      t:'🌏 驊訊科技 · 中爪哇植樹紀錄片'},
+  {f:'treelink', t:'🍃 銘旺 · TreeLink 認證：掃描 QR 看見你的樹'},
+  {f:'farmer',   t:'✨ 回音樹 × 印尼樹農：一份收入，一片森林'},
 ];
+let adSoundOn = false;   // rewarded video starts muted so autoplay is allowed
 
 const PLAYER_STYLE = {hair:'#c9a05a', body:'#6a9a6a', pants:'#5a3a22', flower:'#ffcf6e'};
 /* fields reinterpreted for forest-spirit sprites: hair=acorn cap, body=leaf cape/tunic, pants=boots */
@@ -1734,21 +1758,67 @@ function startWater(floor, treeIdx){
   else go();
 }
 function openAdThen(floor, treeIdx){
-  const modal = $('adModal');
-  $('adContent').textContent = pick(ADS);
-  modal.classList.remove('hidden');
-  let t = 3;
-  $('adTimer').textContent = t;
-  const iv = setInterval(()=>{
-    t--;
+  const modal = $('adModal'), v = $('adVideo'), ad = pick(ADS);
+  let done = false, watchdog = null, fallbackIv = null;
+
+  const finish = ()=>{
+    if (done) return;
+    done = true;
+    clearTimeout(watchdog); clearInterval(fallbackIv);
+    v.onended = v.ontimeupdate = v.onerror = null;
+    try { v.pause(); } catch(e){}
+    v.removeAttribute('src'); v.load();
+    modal.classList.add('hidden');
+    finishWater(floor, treeIdx);
+  };
+
+  // if the video can't be played at all, fall back to a plain countdown
+  const fallback = ()=>{
+    if (done || fallbackIv) return;
+    let t = 3;
     $('adTimer').textContent = t;
-    if (t<=0){
-      clearInterval(iv);
-      modal.classList.add('hidden');
-      finishWater(floor, treeIdx);
-    }
-  }, 800);
+    $('adProg').style.width = '0%';
+    fallbackIv = setInterval(()=>{
+      t--;
+      $('adTimer').textContent = Math.max(0, t);
+      $('adProg').style.width = ((3-t)/3*100)+'%';
+      if (t <= 0) finish();
+    }, 800);
+  };
+
+  $('adTitle').textContent = ad.t;
+  $('adProg').style.width = '0%';
+  $('adTimer').textContent = '7';
+  $('adPlay').classList.add('hidden');
+  $('adSound').textContent = adSoundOn ? '🔊' : '🔇';
+  v.muted = !adSoundOn;
+  v.currentTime = 0;
+  v.poster = `ads/${ad.f}.jpg`;
+  v.src = `ads/${ad.f}.mp4`;
+  modal.classList.remove('hidden');
+
+  v.ontimeupdate = ()=>{
+    const d = v.duration || 7;
+    $('adProg').style.width = Math.min(100, v.currentTime/d*100) + '%';
+    $('adTimer').textContent = Math.max(0, Math.ceil(d - v.currentTime));
+  };
+  v.onended = finish;
+  v.onerror = fallback;
+
+  const p = v.play();
+  if (p && p.catch) p.catch(()=>{ if (!done) $('adPlay').classList.remove('hidden'); });
+  // safety net: never leave the player stuck if the file stalls
+  watchdog = setTimeout(()=>{ if (!done && v.currentTime < 0.3) fallback(); else finish(); }, 16000);
 }
+$('adSound').onclick = ()=>{
+  adSoundOn = !adSoundOn;
+  $('adVideo').muted = !adSoundOn;
+  $('adSound').textContent = adSoundOn ? '🔊' : '🔇';
+};
+$('adPlay').onclick = ()=>{
+  $('adPlay').classList.add('hidden');
+  $('adVideo').play().catch(()=>{});
+};
 function finishWater(floor, treeIdx){
   waterBusy = false;
   const gain = 5 + Math.floor(Math.random()*4);
